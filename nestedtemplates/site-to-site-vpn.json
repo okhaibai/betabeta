@@ -108,7 +108,7 @@
             {
               "name": "[variables('azgwSubnetName')]",
               "properties": {
-                "addressPrefix": "[parameters('beSubnet')]"
+                "addressPrefix": "[parameters('azgwSubnet')]"
               }
             },
             {
@@ -136,7 +136,7 @@
         "location": "[resourceGroup().location]",
         "dependsOn": [
           "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]",
-          "[concat('Microsoft.Network/virtualNetworks/', parameters('vNetName'))]"
+          "Microsoft.Resources/deployments/VNet",
         ],
         "properties": {
           "ipConfigurations": [
@@ -162,5 +162,11 @@
           "enableBgp": "false"
         }
       }
-    ]
+    ],
+  "outputs": {
+      "VPN IP Address": {
+          "type": "string",
+          "value": ""
+      }
+  }
 }
