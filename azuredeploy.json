@@ -390,7 +390,7 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": true,
-            "storageUri": "[concat('http://', variables('vhdStorageAccountName'), '.blob.core.windows.net')]"
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
           }
         },
         "osProfile": {
@@ -602,7 +602,7 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": true,
-            "storageUri": "[concat('http://', variables('vhdStorageAccountName'), '.blob.core.windows.net')]"
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
           }
         }, 
         "osProfile": {
