@@ -55,7 +55,7 @@
         "azgwPIPName": "test-azgateway-pip",
         "connectionName": "test-azgateway-conn",
         "azgwSKU": "Basic",
-        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "gatewaySubnetRef": "[concat(variables('vnetID'),'/subnets/','GatewaySubnet')]",
         "api-version": "2015-06-15"
     },
@@ -96,7 +96,7 @@
       {
         "apiVersion": "[variables('api-version')]",
         "type": "Microsoft.Network/virtualNetworks",
-        "name": "[parameters('virtualNetworkName')]",
+        "name": "[parameters('vNetName')]",
         "location": "[resourceGroup().location]",
         "properties": {
           "addressSpace": {
@@ -136,7 +136,7 @@
         "location": "[resourceGroup().location]",
         "dependsOn": [
           "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]",
-          "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"
+          "[concat('Microsoft.Network/virtualNetworks/', parameters('vNetName'))]"
         ],
         "properties": {
           "ipConfigurations": [
