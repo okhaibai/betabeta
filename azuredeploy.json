@@ -195,6 +195,16 @@
       "kind":"Storage"
     },
     {
+      "name": "[variables('diagStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2016-05-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      },
+      "sku":{"name":"[variables('storageAccountType')]"},
+      "kind":"Storage"
+    },
+    {
       "name": "[variables('publicIPAddressName')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2016-10-01",
