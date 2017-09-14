@@ -248,9 +248,6 @@
           "vNetName": {
             "value": "[parameters('vNetName')]"
           },
-          "vNetName": {
-            "value": "[parameters('vNetName')]"
-          },
           "vNetAddressRange": {
             "value": "[parameters('vNetAddressRange')]"
           },
