@@ -831,7 +831,7 @@
       } 
     },
     {
-      "name": "[parameters('zeroVMName')]",
+      "name": "[parameters('zertoVMName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2016-04-30-preview",
       "location": "[resourceGroup().location]",
