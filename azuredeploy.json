@@ -246,7 +246,7 @@
             "value": "[parameters('azgwLocalSubnet')]"
           },
           "vNetName": {
-            "value": "[parameters('vNetName')]"
+            "value": "[variables('vNetName')]"
           },
           "vNetAddressRange": {
             "value": "[parameters('vNetAddressRange')]"
