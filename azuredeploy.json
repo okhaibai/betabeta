@@ -676,101 +676,102 @@
           }
         }
       ]
+    },
+    {
+      "name": "[concat(parameters('vmDC2Name'),'/PrepareBDC')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.19",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "ModulesUrl": "[variables('adBDCPreparationModulesURL')]",
+          "ConfigurationFunction": "[variables('adBDCPreparationFunction')]",
+          "Properties": {
+            "DNSServer": "[variables('adPDCNicIPAddress')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "ConfiguringBackupADDomainController",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('vmDC2Name'),'/extensions/PrepareBDC')]",
+        "Microsoft.Resources/deployments/UpdateBDCNIC"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('configureADBDCTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vmDC2Name": {
+            "value": "[parameters('vmDC2Name')]"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "adBDCConfigurationFunction": {
+            "value": "[variables('adBDCConfigurationFunction')]"
+          },
+          "adBDCConfigurationModulesURL": {
+            "value": "[variables('adBDCConfigurationModulesURL')]"
+          }
+        }
+      }
+    } ,
+    {
+      "name": "UpdateVNetDNS2",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/ConfiguringBackupADDomainController"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetwithDNSTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vNetName": {
+            "value": "[variables('vNetName')]"
+          },
+          "vNetAddressRange": {
+            "value": "[parameters('vNetAddressRange')]"
+          },
+          "subnetName": {
+            "value": "[variables('beSubnetName')]"
+          },
+          "subnetRange": {
+            "value": "[variables('adSubnet')]"
+          },
+          "DNSServerAddress": {
+            "value": [
+              "[variables('adPDCNicIPAddress')]",
+              "[variables('adBDCNicIPAddress')]"
+            ]
+          }
+        }
+      } 
     }
-    //   "type": "Microsoft.Compute/virtualMachines/extensions",
-    //   "name": "[concat(parameters('vmDC2Name'),'/PrepareBDC')]",
-    //   "apiVersion": "2016-03-30",
-    //   "location": "[resourceGroup().location]",
-    //   "dependsOn": [
-    //     "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]"
-    //   ],
-    //   "properties": {
-    //     "publisher": "Microsoft.Powershell",
-    //     "type": "DSC",
-    //     "typeHandlerVersion": "2.19",
-    //     "autoUpgradeMinorVersion": true,
-    //     "settings": {
-    //       "ModulesUrl": "[variables('adBDCPreparationModulesURL')]",
-    //       "ConfigurationFunction": "[variables('adBDCPreparationFunction')]",
-    //       "Properties": {
-    //         "DNSServer": "[variables('adPDCNicIPAddress')]"
-    //       }
-    //     }
-    //   }
-    // },
-    // {
-    //   "name": "ConfiguringBackupADDomainController",
-    //   "type": "Microsoft.Resources/deployments",
-    //   "apiVersion": "2016-09-01",
-    //   "dependsOn": [
-    //     "[concat('Microsoft.Compute/virtualMachines/',parameters('vmDC2Name'),'/extensions/PrepareBDC')]",
-    //     "Microsoft.Resources/deployments/UpdateBDCNIC"
-    //   ],
-    //   "properties": {
-    //     "mode": "Incremental",
-    //     "templateLink": {
-    //       "uri": "[variables('configureADBDCTemplateUri')]",
-    //       "contentVersion": "1.0.0.0"
-    //     },
-    //     "parameters": {
-    //       "vmDC2Name": {
-    //         "value": "[parameters('vmDC2Name')]"
-    //       },
-    //       "location": {
-    //         "value": "[resourceGroup().location]"
-    //       },
-    //       "adminUsername": {
-    //         "value": "[parameters('adminUsername')]"
-    //       },
-    //       "adminPassword": {
-    //         "value": "[parameters('adminPassword')]"
-    //       },
-    //       "domainName": {
-    //         "value": "[parameters('domainName')]"
-    //       },
-    //       "adBDCConfigurationFunction": {
-    //         "value": "[variables('adBDCConfigurationFunction')]"
-    //       },
-    //       "adBDCConfigurationModulesURL": {
-    //         "value": "[variables('adBDCConfigurationModulesURL')]"
-    //       }
-    //     }
-    //   }
-    // } ,
-    // {
-    //   "name": "UpdateVNetDNS2",
-    //   "type": "Microsoft.Resources/deployments",
-    //   "apiVersion": "2016-09-01",
-    //   "dependsOn": [
-    //     "Microsoft.Resources/deployments/ConfiguringBackupADDomainController"
-    //   ],
-    //   "properties": {
-    //     "mode": "Incremental",
-    //     "templateLink": {
-    //       "uri": "[variables('vnetwithDNSTemplateUri')]",
-    //       "contentVersion": "1.0.0.0"
-    //     },
-    //     "parameters": {
-    //       "vNetName": {
-    //         "value": "[variables('vNetName')]"
-    //       },
-    //       "vNetAddressRange": {
-    //         "value": "[variables('vNetAddressRange')]"
-    //       },
-    //       "subnetName": {
-    //         "value": "[variables('beSubnetName')]"
-    //       },
-    //       "subnetRange": {
-    //         "value": "[variables('adSubnet')]"
-    //       },
-    //       "DNSServerAddress": {
-    //         "value": [
-    //           "[variables('adPDCNicIPAddress')]",
-    //           "[variables('adBDCNicIPAddress')]"
-    //         ]
-    //       }
-    //     }
-    //   } 
-    // }
   ]
 }
