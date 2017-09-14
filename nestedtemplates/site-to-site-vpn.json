@@ -95,33 +95,6 @@
       },
       {
         "apiVersion": "[variables('api-version')]",
-        "type": "Microsoft.Network/virtualNetworks",
-        "name": "[parameters('vNetName')]",
-        "location": "[resourceGroup().location]",
-        "properties": {
-          "addressSpace": {
-            "addressPrefixes": [
-              "[parameters('vNetAddressRange')]"
-            ]
-          },
-          "subnets": [
-            {
-              "name": "[variables('azgwSubnetName')]",
-              "properties": {
-                "addressPrefix": "[parameters('azgwSubnet')]"
-              }
-            },
-            {
-              "name": "GatewaySubnet",
-              "properties": {
-                "addressPrefix": "[parameters('azgwSubnet')]"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "apiVersion": "[variables('api-version')]",
         "type": "Microsoft.Network/publicIPAddresses",
         "name": "[variables('azgwPIPName')]",
         "location": "[resourceGroup().location]",
