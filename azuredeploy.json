@@ -444,12 +444,6 @@
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
         },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
-          }
-        },
         "osProfile": {
           "computerName": "[parameters('vmDC1Name')]",
           "adminUsername": "[parameters('adminUsername')]",
@@ -489,6 +483,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]"
             }
           ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+          }
         }
       },
       "resources": [
@@ -656,12 +656,6 @@
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
         },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
-          }
-        }, 
         "osProfile": {
           "computerName": "[parameters('vmDC2Name')]",
           "adminUsername": "[parameters('adminUsername')]",
@@ -701,6 +695,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]"
             }
           ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+          }
         }
       },
       "resources": [
@@ -848,12 +848,6 @@
         "hardwareProfile": {
           "vmSize": "Standard_D4_v3"
         },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
-          }
-        },
         "osProfile": {
           "computerName": "[parameters('vmDC1Name')]",
           "adminUsername": "[parameters('adminUsername')]",
@@ -881,6 +875,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]"
             }
           ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+          }
         }
       }
     }  
