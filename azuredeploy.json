@@ -76,13 +76,6 @@
     },
       "defaultvalue": "172.16.0.0/16"
     },
-    "azgwSubnet":{
-      "type": "string",
-      "metadata": {
-       "description": "Subnet and mask for Azure Gateway subnet, larger than /28"
-     },
-       "defaultvalue": "172.16.0.0/29"
-    },    
     "feSubnet":{
       "type": "string",
       "metadata": {
@@ -97,6 +90,13 @@
      },
        "defaultvalue": "172.16.2.0/24"
     },
+    "azgwSubnet":{
+      "type": "string",
+      "metadata": {
+       "description": "Subnet and mask for Azure Gateway subnet, larger than /28"
+     },
+       "defaultvalue": "172.16.0.0/29"
+    }, 
     "azgwPSK":{
       "type": "string",
       "metadata": {
@@ -112,7 +112,7 @@
       "defaultValue": "1.1.1.1"
     },
     "azgwLocalSubnet": {
-      "type": "string",
+      "type": "array",
       "metadata": {
         "description": "Local site subnet containing Domain Controllers"
       }
@@ -150,11 +150,6 @@
     "adPDCNicIPAddress": "172.16.2.4",
     "adBDCNicName": "[concat(parameters('vmDC2Name'),'-vnic01')]",
     "adBDCNicIPAddress": "172.16.2.5",
-    "azgwAzureName": "test-azgateway-azure",
-    "azgwAzurePIPName": "test-azgateway-pip",
-    "azgwLocalName": "test-azgateway-local",
-    "azgwSKU": "basic",
-    "azgwConnName": "test-azgatway-conn",
 
     //ID Variables
     "adSubnetRef": "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('beSubnetName'))]",
@@ -164,6 +159,7 @@
     "adBDCRDPNATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('adBDCRDPNAT'))]",
     "adBEAddressPoolID": "[concat(variables('adlbID'),'/backendAddressPools/',variables('adLBBE'))]",
     "vnetTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet.json')]",
+    "azgwTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/site-to-site-vpn.json')]",
     "nicTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/nic.json')]",
     "vnetwithDNSTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet-with-dns-server.json')]",
     "configureADBDCTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/configureADBDC.json')]",
@@ -227,6 +223,48 @@
           },
           "subnetRange": {
             "value": "[parameters('beSubnet')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "azgw",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('networkRG')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('azgwTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "azgwLocalPIP": {
+            "value": "[parameters('azgwLocalPIP')]"
+          },
+          "azgwLocalSubnet": {
+            "value": "[parameters('azgwLocalSubnet')]"
+          },
+          "azgwSubnet": {
+            "value": "[parameters('azgwSubnet')]"
+          },
+          "vNetNetworkName": {
+            "value": "[parameters('vNetNetworkName')]"
+          },
+          "vNetName": {
+            "value": "[parameters('vNetName')]"
+          },
+          "vNetAddressRange": {
+            "value": "[parameters('vNetAddressRange')]"
+          },
+          "beSubnet": {
+            "value": "[parameters('beSubnet')]"
+          },
+          "azgwSubnet": {
+            "value": "[parameters('azgwSubnet')]"
+          },
+          "azgwPSK": {
+            "value": "[parameters('azgwPSK')]"
           }
         }
       }

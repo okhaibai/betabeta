@@ -1,0 +1,166 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "azgwLocalPIP": {
+            "type": "string",
+            "defaultValue": "1.1.1.1",
+            "metadata": {
+                "description": "Public IP of your local VPN IP Instance"
+            }
+        },
+        "azgwLocalSubnet": {
+            "type": "array",
+            "defaultValue": [ "192.168.0.0/16" , "172.16.0.0/12" ],
+            "metadata": {
+                "description": "CIDR block representing the address space of the OnPremise VPN network's Subnet"
+            }
+        },
+        "vNetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Arbitrary name for the Azure Virtual Network"
+            }
+        },
+        "vNetAddressRange": {
+            "type": "string",
+            "metadata": {
+                "description": "CIDR block representing the address space of the Azure VNet"
+            }
+        },
+        "beSubnet": {
+            "type": "string",
+            "metadata": {
+                "description": "CIDR block for VM subnet, subset of vNetAddressRange address space"
+            }
+        },
+        "azgwSubnet": {
+            "type": "string",
+            "metadata": {
+                "description": "CIDR block for gateway subnet, subset of vNetAddressRange address space"
+            }
+        },
+        "azgwPSK": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Shared key (PSK) for IPSec tunnel"
+            }
+        }
+    },
+    "variables": {
+        "azgwVpnType": "PolicyBased",
+        "azgwSubnetName": "Gateway-Subnet",
+        "azgwAzureName": "test-azgateway-azure",
+        "azgwLocalName": "test-azgateway-local",
+        "azgwPIPName": "test-azgateway-pip",
+        "connectionName": "test-azgateway-conn",
+        "azgwSKU": "Basic",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "gatewaySubnetRef": "[concat(variables('vnetID'),'/subnets/','GatewaySubnet')]",
+        "api-version": "2015-06-15"
+    },
+    "resources": [
+      {
+        "name": "[variables('azgwLocalName')]",
+        "apiVersion": "[variables('api-version')]",
+        "type": "Microsoft.Network/localNetworkGateways",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "localNetworkAddressSpace": {
+            "addressPrefixes": "[parameters('azgwLocalSubnet')]"
+          },
+          "gatewayIpAddress": "[parameters('azgwLocalPIP')]"
+        }
+      },
+      {
+        "apiVersion": "[variables('api-version')]",
+        "name": "[variables('connectionName')]",
+        "type": "Microsoft.Network/connections",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/virtualNetworkGateways/', variables('azgwAzureName'))]",
+          "[concat('Microsoft.Network/localNetworkGateways/', variables('azgwLocalName'))]"
+        ],
+        "properties": {
+          "virtualNetworkGateway1": {
+            "id": "[resourceId('Microsoft.Network/virtualNetworkGateways', variables('azgwAzureName'))]"
+          },
+          "localNetworkGateway2": {
+            "id": "[resourceId('Microsoft.Network/localNetworkGateways', variables('azgwLocalName'))]"
+          },
+          "connectionType": "IPsec",
+          "routingWeight": 10,
+          "azgwPSK": "[parameters('azgwPSK')]"
+        }
+      },
+      {
+        "apiVersion": "[variables('api-version')]",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[parameters('virtualNetworkName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[parameters('vNetAddressRange')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('azgwSubnetName')]",
+              "properties": {
+                "addressPrefix": "[parameters('beSubnet')]"
+              }
+            },
+            {
+              "name": "GatewaySubnet",
+              "properties": {
+                "addressPrefix": "[parameters('azgwSubnet')]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "[variables('api-version')]",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('azgwPIPName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic"
+        }
+      },
+      {
+        "apiVersion": "[variables('api-version')]",
+        "type": "Microsoft.Network/virtualNetworkGateways",
+        "name": "[variables('azgwAzureName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "subnet": {
+                  "id": "[variables('gatewaySubnetRef')]"
+                },
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('azgwPIPName'))]"
+                }
+              },
+              "name": "vnetGatewayConfig"
+            }
+          ],
+          "sku": {
+            "name": "[variables('azgwSKU')]",
+            "tier": "[variables('azgwSKU')]"
+          },
+          "gatewayType": "Vpn",
+          "vpnType": "[variables('azgwVpnType')]",
+          "enableBgp": "false"
+        }
+      }
+    ]
+}
