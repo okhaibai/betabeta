@@ -123,6 +123,9 @@
     "networkRG": "test-networking-rg",
     "adRG": "test-domaincontrollers-rg",
 
+    "zertoVMName": "test-zerto-vm",
+    "zertoVMNicName": "[concat(variables('zertoVMName'),'-vnic-1')]",
+
     //Variables for Active Director VMs
     "vhdStorageAccountName": "testvhdsst01",
     "diagStorageAccountName": "testdiagnosticst01",
@@ -396,6 +399,28 @@
                   "id": "[variables('adBDCRDPNATRuleID')]"
                 }
               ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('zertoVMNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('adSubnetRef')]"
+              }
             }
           }
         ]
@@ -804,6 +829,60 @@
           }
         }
       } 
-    }
+    },
+    {
+      "name": "[parameters('zeroVMName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "plan": {
+        "name": "zerto-55-zca",
+        "product": "zerto-virtual-replication-55",
+        "publisher": "zerto"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D4_v3"
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+          }
+        },
+        "osProfile": {
+          "computerName": "[parameters('vmDC1Name')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "zerto",
+            "offer": "zerto-virtual-replication-55",
+            "sku": "zerto-55-zca",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds/','osdisk.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]"
+            }
+          ]
+        }
+      }
+    }  
   ]
 }
