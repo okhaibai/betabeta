@@ -226,6 +226,9 @@
           },
           "subnetRange": {
             "value": "[parameters('beSubnet')]"
+          },
+          "azgwSubnet": {
+            "value": "[parameters('azgwSubnet')]"
           }
         }
       }
@@ -235,6 +238,10 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('networkRG')]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet",
+        "[concat('Microsoft.Compute/virtualMachines/', variables('zertoVMName'))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
