@@ -15,13 +15,13 @@
       },
       "defaultValue": "10.0.0.0/16"
     },
-    "subnetName": {
+    "beSubnetName": {
       "type": "string",
       "metadata": {
         "Description": "The name of the subnet created in the new VNET"
       }
     },
-    "subnetRange": {
+    "beSubnetRange": {
       "type": "string",
       "metadata": {
         "Description": "The address range of the subnet created in the new VNET"
@@ -58,9 +58,9 @@
         },
         "subnets": [
           {
-            "name": "[parameters('subnetName')]",
+            "name": "[parameters('beSubnetName')]",
             "properties": {
-              "addressPrefix": "[parameters('subnetRange')]"
+              "addressPrefix": "[parameters('beSubnetRange')]"
             }
           },
           {
