@@ -20,5 +20,6 @@
     "azgwLocalSubnet": {
       "value": ["10.10.0.0/24"]
     }
+    "az"
   }
 }
