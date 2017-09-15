@@ -67,7 +67,7 @@
       "metadata": {
         "description": "VM size"
       },
-      "defaultValue": "Standard_DS2_v3"
+      "defaultValue": "Standard_D2s_v3"
     },
     "vNetAddressRange":{
      "type": "string",
@@ -126,7 +126,7 @@
     "zertoVMName": "test-zerto-vm",
     "zertoVMNicName": "[concat(variables('zertoVMName'),'-vnic-1')]",
 
-    
+
     //Variables for Active Director VMs
     "vhdStorageAccountName": "testvhdst01",
     "diagStorageAccountName": "testdiagnosticst02",
