@@ -589,6 +589,9 @@
           },
           "subnetRange": {
             "value": "[parameters('beSubnet')]"
+          },   
+          "azgwSubnet":{
+            "value": "[parameters('azgwSubnet')]",
           },
           "DNSServerAddress": {
             "value": [
