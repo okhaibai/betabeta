@@ -572,7 +572,9 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
       "dependsOn": [
+        "Microsoft.Resources/deployments/azgw",
         "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC1Name'),'/extensions/CreateADForest')]"
+
       ],
       "resourceGroup": "[variables('networkRG')]",
       "properties": {
