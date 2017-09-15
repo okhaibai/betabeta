@@ -239,8 +239,7 @@
       "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('networkRG')]",
       "dependsOn": [
-        //"Microsoft.Resources/deployments/UpdateVNetDNS1",
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('zertoVMName'))]",
+        "Microsoft.Resources/deployments/UpdateVNetDNS2"
       ],
       "properties": {
         "mode": "Incremental",
