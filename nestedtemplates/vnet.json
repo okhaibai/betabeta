@@ -25,13 +25,13 @@
       "type": "string",
       "metadata": {
         "Description": "The address range of the subnet created in the new VNET"
-      },
+      }
     },
     "azgwSubnet":{
       "type": "string",
       "metadata": {
         "Description": "The address range of the Azure Gateway subnetT"
-      },
+      }
     }
   },
   "resources": [
