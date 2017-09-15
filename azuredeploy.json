@@ -864,6 +864,8 @@
         "publisher": "zerto"
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNICName'))]"
       ],
       "properties": {
