@@ -885,6 +885,7 @@
             }
           ]
         },
+        
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": true,
