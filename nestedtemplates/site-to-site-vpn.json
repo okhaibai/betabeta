@@ -76,8 +76,8 @@
         }
       },
       {
-        "apiVersion": "[variables('api-version')]",
         "name": "[variables('connectionName')]",
+        "apiVersion": "[variables('api-version')]",
         "type": "Microsoft.Network/connections",
         "location": "[resourceGroup().location]",
         "dependsOn": [
@@ -97,18 +97,18 @@
         }
       },
       {
+        "name": "[variables('azgwPIPName')]",
         "apiVersion": "[variables('api-version')]",
         "type": "Microsoft.Network/publicIPAddresses",
-        "name": "[variables('azgwPIPName')]",
         "location": "[resourceGroup().location]",
         "properties": {
           "publicIPAllocationMethod": "Dynamic"
         }
       },
       {
+        "name": "[variables('azgwAzureName')]",
         "apiVersion": "[variables('api-version')]",
         "type": "Microsoft.Network/virtualNetworkGateways",
-        "name": "[variables('azgwAzureName')]",
         "location": "[resourceGroup().location]",
         "dependsOn": [
           "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]",
