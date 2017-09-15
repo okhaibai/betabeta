@@ -854,8 +854,7 @@
         "publisher": "zerto"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNicName'))]"
+        "Microsoft.Resources/deployments/ConfiguringBackupADDomainController/UpdateVNetDNS2"
       ],
       "scale": null,
       "properties": {
