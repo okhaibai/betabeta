@@ -126,6 +126,7 @@
     "zertoVMName": "test-zerto-vm",
     "zertoVMNicName": "[concat(variables('zertoVMName'),'-vnic-1')]",
 
+    
     //Variables for Active Director VMs
     "vhdStorageAccountName": "testvhdst01",
     "diagStorageAccountName": "testdiagnosticst02",
