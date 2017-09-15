@@ -134,7 +134,7 @@
     "imageOffer": "WindowsServer",
     "adAvailabilitySetName": "test-domaincontrollers-as",
     "publicIPAddressName": "test-domaincontrollers-lb-pip",
-    "adVMSize": "Standard_D2_v2",
+    "adVMSize": "[parameters('adVMSize')]",
     "adVM1DataDisk": "[concat(parameters('vmDC1Name'),'-Data01')]",
     "adVM2DataDisk": "[concat(parameters('vmDC2Name'),'-Data02')]",
     "adDataDiskSize": 62,
