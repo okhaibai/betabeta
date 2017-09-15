@@ -95,7 +95,7 @@
       "metadata": {
        "description": "Subnet and mask for Azure Gateway subnet, larger than /28"
      },
-       "defaultvalue": "172.16.0.0/29"
+       "defaultvalue": "172.16.0.0/27"
     }, 
     "azgwPSK":{
       "type": "string",
