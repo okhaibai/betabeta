@@ -140,11 +140,11 @@
     "adDataDiskSize": 1000,
 
     //Variables for Active Directory PAT load balancer
-    "adLBName": "test-domaincontrollers-lb",
-    "adLBFE": "LBFE",
-    "adLBBE": "LBBE",
-    "adPDCRDPNAT": "adPDCRDP",
-    "adBDCRDPNAT": "adBDCRDP",
+    "lbADName": "test-domaincontrollers-lb",
+    "lbADFrontEndName": "AD-FrontEnd",
+    "lbADBackEndName": "AD-BackEnd",
+    "lbADDC1PAT": "(parameters('vmDC1Name'),'-RDP-PAT')",
+    "lbADDC2PAT": "(parameters('vmDC2Name'),'-RDP-PAT')",
 
     //Viarables for Virtual Networking
     "vNetName": "test-zerto-vnet",
@@ -156,11 +156,11 @@
 
     //ID Variables
     "adSubnetRef": "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('beSubnetName'))]",
-    "adlbID": "[resourceId('Microsoft.Network/loadBalancers',variables('adLBName'))]",
-    "adlbFEConfigID": "[concat(variables('adlbID'),'/frontendIPConfigurations/',variables('adLBFE'))]",
-    "adPDCRDPNATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('adPDCRDPNAT'))]",
-    "adBDCRDPNATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('adBDCRDPNAT'))]",
-    "adBEAddressPoolID": "[concat(variables('adlbID'),'/backendAddressPools/',variables('adLBBE'))]",
+    "adlbID": "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]",
+    "lbADFrontEndNameConfigID": "[concat(variables('adlbID'),'/frontendIPConfigurations/',variables('lbADFrontEndName'))]",
+    "lbADDC1PATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('lbADDC1PAT'))]",
+    "lbADDC2PATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('lbADDC2PAT'))]",
+    "adBEAddressPoolID": "[concat(variables('adlbID'),'/backendAddressPools/',variables('lbADBackEndName'))]",
     "vnetTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet.json')]",
     "azgwTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/site-to-site-vpn.json')]",
     "nicTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/nic.json')]",
@@ -295,7 +295,7 @@
       }
     },
     {
-      "name": "[variables('adLBName')]",
+      "name": "[variables('lbADName')]",
       "type": "Microsoft.Network/loadBalancers",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
@@ -305,7 +305,7 @@
       "properties": {
         "frontendIPConfigurations": [
           {
-            "name": "[variables('adLBFE')]",
+            "name": "[variables('lbADFrontEndName')]",
             "properties": {
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
@@ -315,15 +315,15 @@
         ],
         "backendAddressPools": [
           {
-            "name": "[variables('adLBBE')]"
+            "name": "[variables('lbADBackEndName')]"
           }
         ],
         "inboundNatRules": [
           {
-            "name": "[variables('adPDCRDPNAT')]",
+            "name": "[variables('lbADDC1PAT')]",
             "properties": {
               "frontendIPConfiguration": {
-                "id": "[variables('adlbFEConfigID')]"
+                "id": "[variables('lbADFrontEndNameConfigID')]"
               },
               "protocol": "tcp",
               "frontendPort": "[parameters('vmDC1RDPport')]",
@@ -332,10 +332,10 @@
             }
           },
           {
-            "name": "[variables('adBDCRDPNAT')]",
+            "name": "[variables('lbADDC2PAT')]",
             "properties": {
               "frontendIPConfiguration": {
-                "id": "[variables('adlbFEConfigID')]"
+                "id": "[variables('lbADFrontEndNameConfigID')]"
               },
               "protocol": "tcp",
               "frontendPort": "[parameters('vmDC2RDPport')]",
@@ -353,7 +353,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "Microsoft.Resources/deployments/VNet",
-        "[variables('adLBName')]"
+        "[variables('lbADName')]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -372,7 +372,7 @@
               ],
               "loadBalancerInboundNatRules": [
                 {
-                  "id": "[variables('adPDCRDPNATRuleID')]"
+                  "id": "[variables('lbADDC1PATRuleID')]"
                 }
               ]
             }
@@ -387,7 +387,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "Microsoft.Resources/deployments/VNet",
-        "[concat('Microsoft.Network/loadBalancers/',variables('adLBName'))]"
+        "[concat('Microsoft.Network/loadBalancers/',variables('lbADName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -406,7 +406,7 @@
               ],
               "loadBalancerInboundNatRules": [
                 {
-                  "id": "[variables('adBDCRDPNATRuleID')]"
+                  "id": "[variables('lbADDC2PATRuleID')]"
                 }
               ]
             }
@@ -445,7 +445,7 @@
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
-        "[resourceId('Microsoft.Network/loadBalancers',variables('adLBName'))]"
+        "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -636,7 +636,7 @@
                   ],
                   "loadBalancerInboundNatRules": [
                     {
-                      "id": "[variables('adBDCRDPNATRuleID')]"
+                      "id": "[variables('lbADDC2PATRuleID')]"
                     }
                   ]
                 }
@@ -660,7 +660,7 @@
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
-        "[resourceId('Microsoft.Network/loadBalancers',variables('adLBName'))]"
+        "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]"
       ],
       "properties": {
         "hardwareProfile": {
