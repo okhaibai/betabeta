@@ -423,7 +423,7 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -864,7 +864,7 @@
         "publisher": "zerto"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNICName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNICName'))]"
       ],
       "properties": {
         "hardwareProfile": {
