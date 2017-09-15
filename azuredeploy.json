@@ -854,7 +854,7 @@
         "publisher": "zerto"
       },
       "dependsOn": [
-        "Microsoft.Resources/deployments/ConfiguringBackupADDomainController/UpdateVNetDNS2"
+        "Microsoft.Resources/deployments/UpdateVNetDNS2"
       ],
       "scale": null,
       "properties": {
@@ -899,6 +899,5 @@
     }  
   ],
   "outputs": {
-    
   }
 }
