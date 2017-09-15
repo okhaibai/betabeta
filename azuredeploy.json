@@ -590,10 +590,10 @@
           "vNetAddressRange": {
             "value": "[parameters('vNetAddressRange')]"
           },
-          "subnetName": {
+          "beSubnetName": {
             "value": "[variables('beSubnetName')]"
           },
-          "subnetRange": {
+          "beSubnetRange": {
             "value": "[parameters('beSubnet')]"
           },   
           "azgwSubnet":{
