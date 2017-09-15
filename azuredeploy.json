@@ -873,16 +873,15 @@
           "osDisk": {
             "createOption": "FromImage",
             "vhd": {
-                "uri": "[concat(concat(reference(resourceId('test-domaincontrollers-rg', 'Microsoft.Storage/storageAccounts', parameters('vhdStorageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('zertoVMName'), '20170914201332.vhd')]"
+                "uri": "[concat(concat(reference(resourceId('test-domaincontrollers-rg', 'Microsoft.Storage/storageAccounts', parameters('vhdStorageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), parameters('zertoVMName'), '20170914201332.vhd')]"
             },
             "name": "[variables('zertoVMName')]"
-        },
           }
         },
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNicName'))]"
             }
           ]
         },
