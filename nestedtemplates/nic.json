@@ -17,7 +17,7 @@
     "dnsServers": {
       "type": "array",
       "metadata": {
-        "Description": "The DNS Servers of the NIC"
+        "Description": "The DNS Server(s) of the NIC"
       }
     }
   },
