@@ -133,7 +133,7 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "adAvailabilitySetName": "test-domaincontrollers-as",
-    "publicIPAddressName": "test-domaincontrollers-pip",
+    "publicIPAddressName": "test-domaincontrollers-lb-pip",
     "adVMSize": "Standard_D2_v2",
     "adVM1DataDisk": "[concat(parameters('vmDC1Name'),'-Data01')]",
     "adVM2DataDisk": "[concat(parameters('vmDC2Name'),'-Data02')]",
@@ -239,7 +239,8 @@
       "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('networkRG')]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/UpdateVNetDNS1",
+        //"Microsoft.Resources/deployments/UpdateVNetDNS1",
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('zertoVMName'))]",
       ],
       "properties": {
         "mode": "Incremental",
