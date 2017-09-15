@@ -856,7 +856,6 @@
       "dependsOn": [
         "Microsoft.Resources/deployments/UpdateVNetDNS2"
       ],
-      "scale": null,
       "properties": {
         "hardwareProfile": {
           "vmSize": "Standard_D4_v3"
