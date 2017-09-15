@@ -233,49 +233,49 @@
         }
       }
     },
-    {
-      "name": "azgw",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2017-05-10",
-      "resourceGroup": "[variables('networkRG')]",
-      "dependsOn": [
-        "Microsoft.Resources/deployments/VNet",
-        "[concat('Microsoft.Compute/virtualMachines/', variables('zertoVMName'))]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('azgwTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "azgwLocalPIP": {
-            "value": "[parameters('azgwLocalPIP')]"
-          },
-          "azgwLocalSubnet": {
-            "value": "[parameters('azgwLocalSubnet')]"
-          },
-          "vNetName": {
-            "value": "[variables('vNetName')]"
-          },
-          "vNetAddressRange": {
-            "value": "[parameters('vNetAddressRange')]"
-          },
-          "beSubnet": {
-            "value": "[parameters('beSubnet')]"
-          },
-          "azgwSubnet": {
-            "value": "[parameters('azgwSubnet')]"
-          },
-          "azgwPSK": {
-            "value": "[parameters('azgwPSK')]"
-          },
-          "networkRG": {
-            "value": "[variables('networkRG')]"
-          }
-        }
-      }
-    },
+    // {
+    //   "name": "azgw",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2017-05-10",
+    //   "resourceGroup": "[variables('networkRG')]",
+    //   "dependsOn": [
+    //     "Microsoft.Resources/deployments/VNet",
+    //     "[concat('Microsoft.Compute/virtualMachines/', variables('zertoVMName'))]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "uri": "[variables('azgwTemplateUri')]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "azgwLocalPIP": {
+    //         "value": "[parameters('azgwLocalPIP')]"
+    //       },
+    //       "azgwLocalSubnet": {
+    //         "value": "[parameters('azgwLocalSubnet')]"
+    //       },
+    //       "vNetName": {
+    //         "value": "[variables('vNetName')]"
+    //       },
+    //       "vNetAddressRange": {
+    //         "value": "[parameters('vNetAddressRange')]"
+    //       },
+    //       "beSubnet": {
+    //         "value": "[parameters('beSubnet')]"
+    //       },
+    //       "azgwSubnet": {
+    //         "value": "[parameters('azgwSubnet')]"
+    //       },
+    //       "azgwPSK": {
+    //         "value": "[parameters('azgwPSK')]"
+    //       },
+    //       "networkRG": {
+    //         "value": "[variables('networkRG')]"
+    //       }
+    //     }
+    //   }
+    // },
     {
       "name": "[variables('adAvailabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
