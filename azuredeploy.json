@@ -502,7 +502,7 @@
             "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
           }
         }
-      },
+      // },
       // "resources": [
       //   {
       //     "name": "Microsoft.Insights.VMDiagnosticsSettings",
@@ -530,8 +530,8 @@
       //         "storageAccountKey": "[listkeys(variables('accountid'), '2015-06-15').key1]",
       //         "storageAccountEndPoint": "https://core.windows.net"
       //       }
-      //     }
-      //   },
+           }
+        },
         {
           "name": "CreateADForest",
           "type": "extensions",
