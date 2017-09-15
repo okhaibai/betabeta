@@ -156,11 +156,11 @@
 
     //ID Variables
     "adSubnetRef": "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('beSubnetName'))]",
-    "adlbID": "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]",
-    "lbADFrontEndNameConfigID": "[concat(variables('adlbID'),'/frontendIPConfigurations/',variables('lbADFrontEndName'))]",
-    "lbADDC1PATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('lbADDC1PAT'))]",
-    "lbADDC2PATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('lbADDC2PAT'))]",
-    "adBEAddressPoolID": "[concat(variables('adlbID'),'/backendAddressPools/',variables('lbADBackEndName'))]",
+    "lbADid": "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]",
+    "lbADFrontEndNameConfigID": "[concat(variables('lbADid'),'/frontendIPConfigurations/',variables('lbADFrontEndName'))]",
+    "lbADDC1PATRuleID": "[concat(variables('lbADid'),'/inboundNatRules/',variables('lbADDC1PAT'))]",
+    "lbADDC2PATRuleID": "[concat(variables('lbADid'),'/inboundNatRules/',variables('lbADDC2PAT'))]",
+    "adBEAddressPoolID": "[concat(variables('lbADid'),'/backendAddressPools/',variables('lbADBackEndName'))]",
     "vnetTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet.json')]",
     "azgwTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/site-to-site-vpn.json')]",
     "nicTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/nic.json')]",
