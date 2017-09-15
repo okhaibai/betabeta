@@ -9,7 +9,7 @@
       "value": "Password12345"
     },
     "dnsPrefix": {
-      "value": "thisisuniquename"
+      "value": "egroupAzureRMDemo"
     },
     "domainName": {
       "value": "yourdomain.org"

@@ -240,7 +240,6 @@
     //   "resourceGroup": "[variables('networkRG')]",
     //   "dependsOn": [
     //     "Microsoft.Resources/deployments/VNet",
-    //     "[concat('Microsoft.Compute/virtualMachines/', variables('zertoVMName'))]"
     //   ],
     //   "properties": {
     //     "mode": "Incremental",
@@ -723,7 +722,6 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-06-15",
           "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]",
             "[concat('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName'))]"
           ],
           "tags": {
