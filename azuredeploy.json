@@ -138,7 +138,7 @@
     "adVMSize": "[parameters('adVMSize')]",
     "adVM1DataDisk": "[concat(parameters('vmDC1Name'),'-Data01')]",
     "adVM2DataDisk": "[concat(parameters('vmDC2Name'),'-Data02')]",
-    "adDataDiskSize": 62,
+    "adDataDiskSize": 30,
 
     //Variables for Active Directory PAT load balancer
     "lbADName": "test-domaincontrollers-lb",
@@ -422,7 +422,8 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-         "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]"
+        "Microsoft.Resources/deployments/UpdateVNetDNS2" 
+        //"[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]"
       ],
       "properties": {
         "ipConfigurations": [
