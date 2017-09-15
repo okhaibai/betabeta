@@ -868,7 +868,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "Standard_D4_v3"
+          "vmSize": "Standard_D4s_v3"
         },
         "osProfile": {
           "computerName": "[parameters('vmDC1Name')]",
