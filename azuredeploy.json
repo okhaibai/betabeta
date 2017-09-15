@@ -128,8 +128,13 @@
 
 
     //Variables for Active Director VMs
+<<<<<<< HEAD
     "vhdStorageAccountName": "testzertovhdst01",
     "diagStorageAccountName": "testzertodiagst01",
+=======
+    "vhdStorageAccountName": "testvhdst01",
+    "diagStorageAccountName": "testdiagnosticst01",
+>>>>>>> 598eec2328102c058cd781b90c8efeb94c01152b
     "storageAccountType": "Premium_LRS",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
