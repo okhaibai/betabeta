@@ -839,7 +839,7 @@
             "value": "[variables('beSubnetName')]"
           },
           "subnetRange": {
-            "value": "[variables('azgwSubnet')]"
+            "value": "[parameters('azgwSubnet')]"
           },
           "DNSServerAddress": {
             "value": [
