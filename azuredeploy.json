@@ -124,7 +124,7 @@
     "adRG": "test-domaincontrollers-rg",
 
     "zertoVMName": "test-zerto-vm",
-    "zertoVMNicName": "[concat(variables('zertoVMName'),'-vnic-1')]",
+    "zertoVMNICName": "[concat(variables('zertoVMName'),'-vnic01')]",
 
 
     //Variables for Active Director VMs
@@ -861,7 +861,7 @@
         "publisher": "zerto"
       },
       "dependsOn": [
-        "Microsoft.Resources/deployments/UpdateVNetDNS2"
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNICName'))]",
       ],
       "properties": {
         "hardwareProfile": {
