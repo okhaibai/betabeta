@@ -235,7 +235,7 @@
         }
       }
     },
-   /*  {
+     {
       "name": "azgw",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
@@ -277,7 +277,7 @@
           }
         }
       }
-    }, */
+    }, 
     {
       "name": "[variables('adAvailabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
@@ -422,8 +422,7 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/UpdateVNetDNS2" 
-        //"[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -496,12 +495,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]"
             }
           ]
-        // },
-        // "diagnosticsProfile": {
-        //   "bootDiagnostics": {
-        //     "enabled": true,
-        //     "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
-        //   }
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+          }
         }
       },
       "resources": [
@@ -711,12 +710,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]"
             }
           ]
-        // },
-        // "diagnosticsProfile": {
-        //   "bootDiagnostics": {
-        //     "enabled": true,
-        //     "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
-        //   }
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+          }
         }
       }/* ,
       "resources": [
