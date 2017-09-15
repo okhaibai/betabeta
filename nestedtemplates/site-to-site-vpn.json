@@ -112,7 +112,7 @@
         "location": "[resourceGroup().location]",
         "dependsOn": [
           "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]",
-          "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]"
+          "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks', parameters('vNetName'))]"
         ],
         "properties": {
           "ipConfigurations": [
