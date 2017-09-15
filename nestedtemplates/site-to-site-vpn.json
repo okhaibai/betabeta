@@ -45,6 +45,9 @@
             "metadata": {
                 "description": "Shared key (PSK) for IPSec tunnel"
             }
+        },
+        "networkRG":{
+            "type": "string"
         }
     },
     "variables": {
@@ -109,7 +112,7 @@
         "location": "[resourceGroup().location]",
         "dependsOn": [
           "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]",
-          "Microsoft.Resources/deployments/VNet",
+          "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]"
         ],
         "properties": {
           "ipConfigurations": [
