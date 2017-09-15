@@ -420,7 +420,7 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-          "[concat('Microsoft.Network/networkInterfaces/',variables('adBDCNicName'))]"
+         "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]"
       ],
       "properties": {
         "ipConfigurations": [
