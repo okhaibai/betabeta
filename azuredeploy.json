@@ -185,26 +185,6 @@
   },
   "resources": [
     {
-      "name": "[variables('vhdStorageAccountName')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2016-05-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-      },
-      "sku":{"name":"[variables('storageAccountType')]"},
-      "kind":"Storage"
-    },
-    {
-      "name": "[variables('diagStorageAccountName')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2016-05-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-      },
-      "sku":{"name":"[variables('storageAccountType')]"},
-      "kind":"Storage"
-    },
-    {
       "name": "VNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
@@ -233,6 +213,26 @@
           }
         }
       }
+    },
+    {
+      "name": "[variables('vhdStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2016-05-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      },
+      "sku":{"name":"[variables('storageAccountType')]"},
+      "kind":"Storage"
+    },
+    {
+      "name": "[variables('diagStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2016-05-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      },
+      "sku":{"name":"[variables('storageAccountType')]"},
+      "kind":"Storage"
     },
     {
       "name": "azgw",
