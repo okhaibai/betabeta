@@ -846,14 +846,15 @@
       "apiVersion": "2016-04-30-preview",
       "location": "[resourceGroup().location]",
       "plan": {
-        "name": "zerto-55-zca",
-        "product": "zerto-virtual-replication-55",
+        "name": "zerto55u1zca",
+        "product": "zerto-cloud-appliance-50",
         "publisher": "zerto"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNicName'))]"
       ],
+      "scale": null,
       "properties": {
         "hardwareProfile": {
           "vmSize": "Standard_D4_v3"
@@ -866,14 +867,15 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "zerto",
-            "offer": "zerto-virtual-replication-55",
-            "sku": "zerto-55-zca",
+            "offer": "zerto-cloud-appliance-50",
+            "sku": "zerto55u1zca",
             "version": "latest"
           },
           "osDisk": {
+            "osType": "Windows",
             "createOption": "FromImage",
             "vhd": {
-                "uri": "[concat(concat(reference(resourceId('test-domaincontrollers-rg', 'Microsoft.Storage/storageAccounts', variables('vhdStorageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('zertoVMName'), '20170914201332.vhd')]"
+                "uri": "[concat(variables('vhdStorageAccount'), variables('zertoVMName'),'-osdisk.vhd')]"
             },
             "name": "[variables('zertoVMName')]"
           }
@@ -885,7 +887,7 @@
             }
           ]
         },
-        
+
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": true,
