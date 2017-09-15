@@ -39,7 +39,7 @@
       "metadata": {
         "description": "The public RDP port for the BDC VM"
       },
-      "defaultValue": 13389
+      "defaultValue": 23456
     },
     "vmDC1Name": {
       "type": "string",

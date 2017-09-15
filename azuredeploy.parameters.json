@@ -12,7 +12,7 @@
       "value": "thisisuniquename"
     },
     "domainName": {
-      "value": "contoso.org"
+      "value": "yourdomain.org"
     },
     "azgwLocalPIP": {
       "value": "199.100.100.254"
