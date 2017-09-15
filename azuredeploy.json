@@ -143,8 +143,8 @@
     "lbADName": "test-domaincontrollers-lb",
     "lbADFrontEndName": "AD-FrontEnd",
     "lbADBackEndName": "AD-BackEnd",
-    "lbADDC1PAT": "(parameters('vmDC1Name'),'-RDP-PAT')",
-    "lbADDC2PAT": "(parameters('vmDC2Name'),'-RDP-PAT')",
+    "lbADDC1PAT": "[parameters('vmDC1Name'),'-RDP-PAT']",
+    "lbADDC2PAT": "[parameters('vmDC2Name'),'-RDP-PAT']",
 
     //Viarables for Virtual Networking
     "vNetName": "test-zerto-vnet",
