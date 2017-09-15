@@ -241,8 +241,9 @@
       "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('networkRG')]",
       "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
         //"Microsoft.Resources/deployments/UpdateBDCNIC"
-        "Microsoft.Resources/deployments/UpdateVNetDNS2"
+        //"Microsoft.Resources/deployments/UpdateVNetDNS2"
       ],
       "properties": {
         "mode": "Incremental",
