@@ -819,10 +819,10 @@
       "name": "UpdateVNetDNS2",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
+      "resourceGroup": "[variables('networkRG')]",
       "dependsOn": [
         "Microsoft.Resources/deployments/ConfiguringBackupADDomainController"
       ],
-      "resourceGroup": "[variables('networkRG')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
