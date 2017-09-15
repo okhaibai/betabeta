@@ -722,6 +722,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-06-15",
           "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]",
             "[concat('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName'))]"
           ],
           "tags": {
