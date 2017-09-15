@@ -67,7 +67,7 @@
       "metadata": {
         "description": "VM size"
       },
-      "defaultValue": "Standard_D2S_v3"
+      "defaultValue": "Standard_DS2_v3"
     },
     "vNetAddressRange":{
      "type": "string",
@@ -134,7 +134,7 @@
     "imageOffer": "WindowsServer",
     "adAvailabilitySetName": "test-domaincontrollers-as",
     "publicIPAddressName": "test-domaincontrollers-lb-pip",
-    "adVMSize": "[parameters('adVMSize')]",
+    "adVMSize": "Standard_D2_v2",
     "adVM1DataDisk": "[concat(parameters('vmDC1Name'),'-Data01')]",
     "adVM2DataDisk": "[concat(parameters('vmDC2Name'),'-Data02')]",
     "adDataDiskSize": 62,
@@ -185,6 +185,26 @@
   },
   "resources": [
     {
+      "name": "[variables('vhdStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2016-05-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      },
+      "sku":{"name":"[variables('storageAccountType')]"},
+      "kind":"Storage"
+    },
+    {
+      "name": "[variables('diagStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2016-05-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      },
+      "sku":{"name":"Standard_LRS"},
+      "kind":"Storage"
+    },
+    {
       "name": "VNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
@@ -214,27 +234,7 @@
         }
       }
     },
-    {
-      "name": "[variables('vhdStorageAccountName')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2016-05-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-      },
-      "sku":{"name":"[variables('storageAccountType')]"},
-      "kind":"Storage"
-    },
-    {
-      "name": "[variables('diagStorageAccountName')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2016-05-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-      },
-      "sku":{"name":"Standard_LRS"},
-      "kind":"Storage"
-    },
-    {
+   /*  {
       "name": "azgw",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
@@ -276,7 +276,7 @@
           }
         }
       }
-    },
+    }, */
     {
       "name": "[variables('adAvailabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
@@ -444,7 +444,6 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
         "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]"
@@ -495,13 +494,13 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]"
             }
           ]
-        }/* ,
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
-          }
-        } */
+        // },
+        // "diagnosticsProfile": {
+        //   "bootDiagnostics": {
+        //     "enabled": true,
+        //     "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+        //   }
+        }
       },
       "resources": [
         // {
@@ -660,7 +659,6 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
         "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]"
@@ -711,44 +709,44 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]"
             }
           ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+        // },
+        // "diagnosticsProfile": {
+        //   "bootDiagnostics": {
+        //     "enabled": true,
+        //     "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+        //   }
+        }
+      }/* ,
+      "resources": [
+        {
+          "name": "Microsoft.Insights.VMDiagnosticsSettings",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2015-06-15",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]",
+            "[concat('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName'))]"
+          ],
+          "tags": {
+            "displayName": "AzureDiagnostics"
+          },
+          "properties": {
+            "publisher": "Microsoft.Azure.Diagnostics",
+            "type": "IaaSDiagnostics",
+            "typeHandlerVersion": "1.5",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "xmlCfg": "[base64(concat(variables('wadcfgxstart'), variables('wadmetricsresourceid'), parameters('vmDC2Name'), variables('wadcfgxend')))]",
+              "storageAccount": "[variables('diagStorageAccountName')]"
+            },
+            "protectedSettings": {
+              "storageAccountName": "[variables('diagStorageAccountName')]",
+              "storageAccountKey": "[listkeys(variables('accountid'), '2015-06-15').key1]",
+              "storageAccountEndPoint": "https://core.windows.net"
+            }
           }
         }
-      },
-      // "resources": [
-      //   {
-      //     "name": "Microsoft.Insights.VMDiagnosticsSettings",
-      //     "type": "extensions",
-      //     "location": "[resourceGroup().location]",
-      //     "apiVersion": "2015-06-15",
-      //     "dependsOn": [
-      //       "[concat('Microsoft.Compute/virtualMachines/', parameters('vmDC2Name'))]",
-      //       "[concat('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName'))]"
-      //     ],
-      //     "tags": {
-      //       "displayName": "AzureDiagnostics"
-      //     },
-      //     "properties": {
-      //       "publisher": "Microsoft.Azure.Diagnostics",
-      //       "type": "IaaSDiagnostics",
-      //       "typeHandlerVersion": "1.5",
-      //       "autoUpgradeMinorVersion": true,
-      //       "settings": {
-      //         "xmlCfg": "[base64(concat(variables('wadcfgxstart'), variables('wadmetricsresourceid'), parameters('vmDC2Name'), variables('wadcfgxend')))]",
-      //         "storageAccount": "[variables('diagStorageAccountName')]"
-      //       },
-      //       "protectedSettings": {
-      //         "storageAccountName": "[variables('diagStorageAccountName')]",
-      //         "storageAccountKey": "[listkeys(variables('accountid'), '2015-06-15').key1]",
-      //         "storageAccountEndPoint": "https://core.windows.net"
-      //       }
-      //     }
-      //   }
-      // ]
+      ] */
     },
     {
       "name": "[concat(parameters('vmDC2Name'),'/PrepareBDC')]",
@@ -857,8 +855,6 @@
         "publisher": "zerto"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
         "Microsoft.Resources/deployments/UpdateVNetDNS2"
       ],
       "properties": {
