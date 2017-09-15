@@ -271,7 +271,7 @@
             "value": "[parameters('azgwPSK')]"
           },
           "networkRG": {
-            "value": "[vairables('networkRG')]"
+            "value": "[variables('networkRG')]"
           }
         }
       }
@@ -895,5 +895,8 @@
         }
       }
     }  
-  ]
+  ],
+  "outputs": {
+    
+  }
 }
