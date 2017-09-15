@@ -76,27 +76,6 @@
         }
       },
       {
-        "name": "[variables('connectionName')]",
-        "apiVersion": "[variables('api-version')]",
-        "type": "Microsoft.Network/connections",
-        "location": "[resourceGroup().location]",
-        "dependsOn": [
-          "[concat('Microsoft.Network/virtualNetworkGateways/', variables('azgwAzureName'))]",
-          "[concat('Microsoft.Network/localNetworkGateways/', variables('azgwLocalName'))]"
-        ],
-        "properties": {
-          "virtualNetworkGateway1": {
-            "id": "[resourceId('Microsoft.Network/virtualNetworkGateways', variables('azgwAzureName'))]"
-          },
-          "localNetworkGateway2": {
-            "id": "[resourceId('Microsoft.Network/localNetworkGateways', variables('azgwLocalName'))]"
-          },
-          "connectionType": "IPsec",
-          "routingWeight": 10,
-          "azgwPSK": "[parameters('azgwPSK')]"
-        }
-      },
-      {
         "name": "[variables('azgwPIPName')]",
         "apiVersion": "[variables('api-version')]",
         "type": "Microsoft.Network/publicIPAddresses",
@@ -111,8 +90,7 @@
         "type": "Microsoft.Network/virtualNetworkGateways",
         "location": "[resourceGroup().location]",
         "dependsOn": [
-          "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]",
-          "[resourceId(parameters('networkRG'),'Microsoft.Network/virtualNetworks', parameters('vNetName'))]"
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('azgwPIPName'))]"
         ],
         "properties": {
           "ipConfigurations": [
@@ -137,12 +115,33 @@
           "vpnType": "[variables('azgwVpnType')]",
           "enableBgp": "false"
         }
+      },
+      {
+        "name": "[variables('connectionName')]",
+        "apiVersion": "[variables('api-version')]",
+        "type": "Microsoft.Network/connections",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/virtualNetworkGateways/', variables('azgwAzureName'))]",
+          "[concat('Microsoft.Network/localNetworkGateways/', variables('azgwLocalName'))]"
+        ],
+        "properties": {
+          "virtualNetworkGateway1": {
+            "id": "[resourceId('Microsoft.Network/virtualNetworkGateways', variables('azgwAzureName'))]"
+          },
+          "localNetworkGateway2": {
+            "id": "[resourceId('Microsoft.Network/localNetworkGateways', variables('azgwLocalName'))]"
+          },
+          "connectionType": "IPsec",
+          "routingWeight": 10,
+          "azgwPSK": "[parameters('azgwPSK')]"
+        }
       }
     ],
   "outputs": {
       "VPN IP Address": {
           "type": "string",
-          "value": ""
+          "value": "eGroup Rocks"
       }
   }
 }
