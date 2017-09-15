@@ -172,7 +172,7 @@
     "adPDCConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
     "adBDCPreparationModulesURL": "https://github.com/okhaibai/betabeta/blob/master/DSC/PrepareADBDC.zip?raw=true",
     "adBDCPreparationFunction": "PrepareADBDC.ps1\\PrepareADBDC",
-    "adBDCConfigurationModulesURL": "https://github.com/okhaibai/betabeta/blob/master/DSC/CreateADPDC.zip?raw=true",
+    "adBDCConfigurationModulesURL": "https://github.com/okhaibai/betabeta/blob/master/DSC/CreateADBDC.zip?raw=true",
     "adBDCConfigurationFunction": "ConfigureADBDC.ps1\\ConfigureADBDC",
 
     //Diagnostics Storage Seettings
