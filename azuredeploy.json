@@ -421,7 +421,6 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
           "[concat('Microsoft.Network/networkInterfaces/',variables('adBDCNicName'))]"
-        ],
       ],
       "properties": {
         "ipConfigurations": [
