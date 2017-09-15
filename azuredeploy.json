@@ -875,7 +875,7 @@
             "osType": "Windows",
             "createOption": "FromImage",
             "vhd": {
-                "uri": "[concat(variables('vhdStorageAccount'), variables('zertoVMName'),'-osdisk.vhd')]"
+                "uri": "[concat(variables('vhdStorageAccountName'), variables('zertoVMName'),'-osdisk.vhd')]"
             },
             "name": "[variables('zertoVMName')]"
           }
