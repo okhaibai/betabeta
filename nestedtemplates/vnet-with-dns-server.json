@@ -28,16 +28,16 @@
       },
       "defaultValue": "10.0.0.0/24"
     },
-    "DNSServerAddress": {
-      "type": "array",
-      "metadata": {
-        "Description": "The DNS address(es) of the DNS Server(s) used by the VNET"
-      }
-    },
     "azgwSubnet":{
       "type": "string",
       "metadata": {
         "Description": "The address range of the Azure Gateway subnetT"
+      }      
+    },
+    "DNSServerAddress": {
+      "type": "array",
+      "metadata": {
+        "Description": "The DNS address(es) of the DNS Server(s) used by the VNET"
       }
     }
   },
