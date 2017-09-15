@@ -9,7 +9,7 @@
       "value": "Password12345"
     },
     "dnsPrefix": {
-      "value": "egroupAzureRMDemo"
+      "value": "zerto-azure-demo"
     },
     "domainName": {
       "value": "yourdomain.org"
