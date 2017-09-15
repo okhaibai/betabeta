@@ -127,7 +127,7 @@
     "zertoVMNicName": "[concat(variables('zertoVMName'),'-vnic-1')]",
 
     //Variables for Active Director VMs
-    "vhdStorageAccountName": "testvhdsst01",
+    "vhdStorageAccountName": "testvhdst01",
     "diagStorageAccountName": "testdiagnosticst01",
     "storageAccountType": "Standard_LRS",
     "imagePublisher": "MicrosoftWindowsServer",
