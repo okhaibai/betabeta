@@ -231,7 +231,7 @@
       "location": "[resourceGroup().location]",
       "properties": {
       },
-      "sku":{"name":"[variables('storageAccountType')]"},
+      "sku":{"name":"Standard_LRS"},
       "kind":"Storage"
     },
     {
