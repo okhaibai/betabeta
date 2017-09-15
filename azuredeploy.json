@@ -67,7 +67,7 @@
       "metadata": {
         "description": "VM size"
       },
-      "defaultValue": "D2_v2_promo"
+      "defaultValue": "DS2_v2_promo"
     },
     "vNetAddressRange":{
      "type": "string",
@@ -129,7 +129,7 @@
     //Variables for Active Director VMs
     "vhdStorageAccountName": "testvhdst01",
     "diagStorageAccountName": "testdiagnosticst01",
-    "storageAccountType": "Standard_LRS",
+    "storageAccountType": "Premium_LRS",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "adAvailabilitySetName": "test-domaincontrollers-as",
@@ -137,7 +137,7 @@
     "adVMSize": "Standard_D2_v2",
     "adVM1DataDisk": "[concat(parameters('vmDC1Name'),'-Data01')]",
     "adVM2DataDisk": "[concat(parameters('vmDC2Name'),'-Data02')]",
-    "adDataDiskSize": 1000,
+    "adDataDiskSize": 62,
 
     //Variables for Active Directory PAT load balancer
     "lbADName": "test-domaincontrollers-lb",
