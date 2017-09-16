@@ -128,8 +128,8 @@
     "zertoVMNICName": "[concat(variables('zertoVMName'),'-vnic01')]",
 
     //Variables for Active Director VMs
-    "vhdStorageAccountName": "testzertovhdst01",
-    "diagStorageAccountName": "testzertodiagst01",
+    "vhdStorageAccountName": "[concat('testzertovhdst01-',uniqueString(resourceGroup().id))]",
+    "diagStorageAccountName": "[concat('testzertodiagst01-',uniqueString(resourceGroup().id))]",
     "storageAccountType": "Premium_LRS",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
@@ -163,11 +163,15 @@
     "lbADDC1PATRuleID": "[concat(variables('lbADid'),'/inboundNatRules/',variables('lbADDC1PAT'))]",
     "lbADDC2PATRuleID": "[concat(variables('lbADid'),'/inboundNatRules/',variables('lbADDC2PAT'))]",
     "adBEAddressPoolID": "[concat(variables('lbADid'),'/backendAddressPools/',variables('lbADBackEndName'))]",
+    
+    //Nested Template URIs
     "vnetTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet.json')]",
     "azgwTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/site-to-site-vpn.json')]",
     "nicTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/nic.json')]",
     "vnetwithDNSTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet-with-dns-server.json')]",
     "configureADBDCTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/configureADBDC.json')]",
+    
+    //PS Modules URIs
     "adPDCModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/CreateADPDC.zip')]",
     "adPDCConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
     "adBDCPreparationModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/PrepareADBDC.zip')]",
@@ -838,7 +842,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('vnetTemplateUri')]",
+          "uri": "[variables('zertoTemplateUri')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
