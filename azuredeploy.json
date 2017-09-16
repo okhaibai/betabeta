@@ -860,10 +860,10 @@
           "vmADSubnetRef": {
             "value": "[variables('vmADSubnetRef')]"
           },
-          "zertoVMName": {
+          "vhdStorageAccountName": {
             "value": "[variables('vhdStorageAccountName')]"
           },
-          "zertoVMNicName": {
+          "diagStorageAccountName": {
             "value": "[variables('diagStorageAccountName')]"
           }
         }
