@@ -840,11 +840,16 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('zertoRG')]",
+      "dependsOn": [
+        "[resourceId('test-domaincontrollers','Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('zertoTemplateUri')]",
-          "contentVersion": "1.0.0.0"
+        "uri": "[variables('zertoTemplateUri')]",
+        "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "adminUsername": {
@@ -852,9 +857,6 @@
           },
           "adminPassword": {
             "value": "[parameters('adminPassword')]"
-          },
-          "vmDC2NicName": {
-            "value": "[variables('vmDC2NicName')]"
           },
           "zertoVMName": {
             "value": "[variables('zertoVMName')]"

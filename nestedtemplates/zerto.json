@@ -42,9 +42,6 @@
         "type": "Microsoft.Network/networkInterfaces",
         "apiVersion": "2016-10-01",
         "location": "[resourceGroup().location]",
-        "dependsOn": [
-        "[resourceId('test-domaincontrollers','Microsoft.Network/networkInterfaces',parameters('vmDC2NicName'))]"
-        ],
         "properties": {
             "ipConfigurations": [
               {
@@ -64,16 +61,14 @@
         "type": "Microsoft.Compute/virtualMachines",
         "apiVersion": "2016-04-30-preview",
         "location": "[resourceGroup().location]",
+        "dependsOn": [
+            "[resourceId('Microsoft.Network/networkInterfaces',parameters('zertoVMNICName'))]"        
+        ],
         "plan": {
         "name": "zerto55u1zca",
         "product": "zerto-cloud-appliance-50",
         "publisher": "zerto"
         },
-        "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts',parameters('vhdStorageAccountName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',parameters('diagStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',parameters('zertoVMNICName'))]"
-        ],
         "properties": {
         "hardwareProfile": {
             "vmSize": "Standard_D4s_v3"
