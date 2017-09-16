@@ -62,7 +62,7 @@
       },
       "defaultValue": "2016-Datacenter"
     },
-    "adVMSize": {
+    "vmDCSize": {
       "type": "string",
       "metadata": {
         "description": "VM size"
@@ -100,7 +100,7 @@
     "azgwPSK":{
       "type": "string",
       "metadata": {
-        "description": "Pre-Shared Key for VPN tunnel/"
+        "description": "Pre-Shared Key for VPN tunnel"
       },
       "defaultValue": "PSK123"
     },
@@ -123,9 +123,9 @@
     "networkRG": "test-networking-rg",
     "adRG": "test-domaincontrollers-rg",
 
+    //Variables for Zerto VM
     "zertoVMName": "test-zerto-vm",
     "zertoVMNICName": "[concat(variables('zertoVMName'),'-vnic01')]",
-
 
     //Variables for Active Director VMs
     "vhdStorageAccountName": "testzertovhdst01",
@@ -133,15 +133,19 @@
     "storageAccountType": "Premium_LRS",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
-    "adAvailabilitySetName": "test-domaincontrollers-as",
-    "publicIPAddressName": "test-domaincontrollers-lb-pip",
-    "adVMSize": "[parameters('adVMSize')]",
-    "adVM1DataDisk": "[concat(parameters('vmDC1Name'),'-Data01')]",
-    "adVM2DataDisk": "[concat(parameters('vmDC2Name'),'-Data02')]",
-    "adDataDiskSize": 30,
+    "vmADAvailabilitySetName": "test-domaincontrollers-as",
+    "vmDCSize": "[parameters('vmDCSize')]",
+    "vmDC1DataDiskName": "[concat(parameters('vmDC1Name'),'-Data01')]",
+    "vmDC2DataDiskName": "[concat(parameters('vmDC2Name'),'-Data02')]",
+    "vmDC1NicName": "[concat(parameters('vmDC1Name'),'-vnic01')]",
+    "vmDC1NicAddress": "172.16.2.4",
+    "vmDC2NicName": "[concat(parameters('vmDC2Name'),'-vnic01')]",
+    "vmDC2NicAddress": "172.16.2.5",
+    "vmDCDataDiskSize": 30,
 
     //Variables for Active Directory PAT load balancer
     "lbADName": "test-domaincontrollers-lb",
+    "lbPIPAddressName": "test-domaincontrollers-lb-pip",
     "lbADFrontEndName": "AD-FrontEnd",
     "lbADBackEndName": "AD-BackEnd",
     "lbADDC1PAT": "[concat(parameters('vmDC1Name'),'-RDP-PAT')]",
@@ -151,10 +155,6 @@
     //Viarables for Virtual Networking
     "vNetName": "test-zerto-vnet",
     "beSubnetName": "Backend",
-    "adPDCNicName": "[concat(parameters('vmDC1Name'),'-vnic01')]",
-    "adPDCNicIPAddress": "172.16.2.4",
-    "adBDCNicName": "[concat(parameters('vmDC2Name'),'-vnic01')]",
-    "adBDCNicIPAddress": "172.16.2.5",
 
     //ID Variables
     "adSubnetRef": "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('beSubnetName'))]",
@@ -168,11 +168,11 @@
     "nicTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/nic.json')]",
     "vnetwithDNSTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet-with-dns-server.json')]",
     "configureADBDCTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/configureADBDC.json')]",
-    "adPDCModulesURL": "https://github.com/okhaibai/betabeta/blob/master/DSC/CreateADPDC.zip?raw=true",
+    "adPDCModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/CreateADPDC.zip')]",
     "adPDCConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-    "adBDCPreparationModulesURL": "https://github.com/okhaibai/betabeta/blob/master/DSC/PrepareADBDC.zip?raw=true",
+    "adBDCPreparationModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/PrepareADBDC.zip')]",
     "adBDCPreparationFunction": "PrepareADBDC.ps1\\PrepareADBDC",
-    "adBDCConfigurationModulesURL": "https://github.com/okhaibai/betabeta/blob/master/DSC/ConfigureADBDC.zip?raw=true",
+    "adBDCConfigurationModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/ConfigureADBDC.zip')]",
     "adBDCConfigurationFunction": "ConfigureADBDC.ps1\\ConfigureADBDC",
 
     //Diagnostics Storage Seettings
@@ -278,13 +278,13 @@
       }
     }, 
     {
-      "name": "[variables('adAvailabilitySetName')]",
+      "name": "[variables('vmADAvailabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]"
     },
     {
-      "name": "[variables('publicIPAddressName')]",
+      "name": "[variables('lbPIPAddressName')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
@@ -301,7 +301,7 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses',variables('lbPIPAddressName'))]"
       ],
       "properties": {
         "frontendIPConfigurations": [
@@ -309,7 +309,7 @@
             "name": "[variables('lbADFrontEndName')]",
             "properties": {
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('lbPIPAddressName'))]"
               }
             }
           }
@@ -348,7 +348,7 @@
       }
     },
     {
-      "name": "[variables('adPDCNicName')]",
+      "name": "[variables('vmDC1NicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
@@ -362,7 +362,7 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[variables('adPDCNicIPAddress')]",
+              "privateIPAddress": "[variables('vmDC1NicAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
               },
@@ -382,7 +382,7 @@
       }
     },
     {
-      "name": "[variables('adBDCNicName')]",
+      "name": "[variables('vmDC2NicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
@@ -396,7 +396,7 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[variables('adBDCNicIPAddress')]",
+              "privateIPAddress": "[variables('vmDC2NicAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
               },
@@ -421,7 +421,7 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -445,16 +445,16 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC1NicName'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('vmADAvailabilitySetName'))]",
         "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]"
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[variables('adVMSize')]"
+          "vmSize": "[variables('vmDCSize')]"
         },
         "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('vmADAvailabilitySetName'))]"
         },
         "osProfile": {
           "computerName": "[parameters('vmDC1Name')]",
@@ -479,11 +479,11 @@
           "dataDisks": [
             {
               "vhd": {
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds0/', variables('adVM1DataDisk'),'-1.vhd')]"
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds0/', variables('vmDC1DataDiskName'),'-1.vhd')]"
               },
               "name": "[concat(parameters('vmDC1Name'),'-data-disk1')]",
               "caching": "None",
-              "diskSizeGB": "[variables('adDataDiskSize')]",
+              "diskSizeGB": "[variables('vmDCDataDiskSize')]",
               "lun": 0,
               "createOption": "Empty"
             }
@@ -492,7 +492,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC1NicName'))]"
             }
           ]
         },
@@ -599,7 +599,7 @@
           },
           "DNSServerAddress": {
             "value": [
-              "[variables('adPDCNicIPAddress')]"
+              "[variables('vmDC1NicAddress')]"
             ]
           }
         }
@@ -610,7 +610,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/',variables('adBDCNicName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/',variables('vmDC2NicName'))]",
         "Microsoft.Resources/deployments/UpdateVNetDNS1"
       ],
       "properties": {
@@ -621,7 +621,7 @@
         },
         "parameters": {
           "nicName": {
-            "value": "[variables('adBDCNicName')]"
+            "value": "[variables('vmDC2NicName')]"
           },
           "ipConfigurations": {
             "value": [
@@ -629,7 +629,7 @@
                 "name": "ipconfig1",
                 "properties": {
                   "privateIPAllocationMethod": "Static",
-                  "privateIPAddress": "[variables('adBDCNicIPAddress')]",
+                  "privateIPAddress": "[variables('vmDC2NicAddress')]",
                   "subnet": {
                     "id": "[variables('adSubnetRef')]"
                   },
@@ -649,7 +649,7 @@
           },
           "dnsServers": {
             "value": [
-              "[variables('adPDCNicIPAddress')]"
+              "[variables('vmDC1NicAddress')]"
             ]
           }
         }
@@ -663,16 +663,16 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('vmADAvailabilitySetName'))]",
         "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]"
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[variables('adVMSize')]"
+          "vmSize": "[variables('vmDCSize')]"
         },
         "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('vmADAvailabilitySetName'))]"
         },
         "osProfile": {
           "computerName": "[parameters('vmDC2Name')]",
@@ -697,11 +697,11 @@
           "dataDisks": [
             {
               "vhd": {
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds/',variables('adVM2DataDisk'),'-1.vhd')]"
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds/',variables('vmDC2DataDiskName'),'-1.vhd')]"
               },
               "name": "[concat(parameters('vmDC2Name'),'-data-disk1')]",
               "caching": "None",
-              "diskSizeGB": "[variables('adDataDiskSize')]",
+              "diskSizeGB": "[variables('vmDCDataDiskSize')]",
               "lun": 0,
               "createOption": "empty"
             }
@@ -710,7 +710,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]"
             }
           ]
         },
@@ -769,7 +769,7 @@
           "ModulesUrl": "[variables('adBDCPreparationModulesURL')]",
           "ConfigurationFunction": "[variables('adBDCPreparationFunction')]",
           "Properties": {
-            "DNSServer": "[variables('adPDCNicIPAddress')]"
+            "DNSServer": "[variables('vmDC1NicAddress')]"
           }
         }
       }
@@ -845,8 +845,8 @@
           },
           "DNSServerAddress": {
             "value": [
-              "[variables('adPDCNicIPAddress')]",
-              "[variables('adBDCNicIPAddress')]"
+              "[variables('vmDC1NicAddress')]",
+              "[variables('vmDC2NicAddress')]"
             ]
           }
         }
