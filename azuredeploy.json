@@ -168,6 +168,7 @@
     "vnetTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet.json')]",
     "azgwTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/site-to-site-vpn.json')]",
     "nicTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/nic.json')]",
+    "zertoTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/zerto.json')]",
     "vnetwithDNSTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet-with-dns-server.json')]",
     "configureADBDCTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/configureADBDC.json')]",
     
