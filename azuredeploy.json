@@ -122,7 +122,7 @@
     //Resource Group Names
     "networkRG": "test-networking-rg",
     "adRG": "test-domaincontrollers-rg",
-
+    "zertoRG": "test-zerto-rg",
     //Variables for Zerto VM
     "zertoVMName": "test-zerto-vm",
     "zertoVMNICName": "[concat(variables('zertoVMName'),'-vnic01')]",
@@ -157,7 +157,7 @@
     "beSubnetName": "Backend",
 
     //ID Variables
-    "adSubnetRef": "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('beSubnetName'))]",
+    "vmADSubnetRef": "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('beSubnetName'))]",
     "lbADid": "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]",
     "lbADFrontEndNameConfigID": "[concat(variables('lbADid'),'/frontendIPConfigurations/',variables('lbADFrontEndName'))]",
     "lbADDC1PATRuleID": "[concat(variables('lbADid'),'/inboundNatRules/',variables('lbADDC1PAT'))]",
@@ -364,7 +364,7 @@
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('vmDC1NicAddress')]",
               "subnet": {
-                "id": "[variables('adSubnetRef')]"
+                "id": "[variables('vmADSubnetRef')]"
               },
               "loadBalancerBackendAddressPools": [
                 {
@@ -398,7 +398,7 @@
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('vmDC2NicAddress')]",
               "subnet": {
-                "id": "[variables('adSubnetRef')]"
+                "id": "[variables('vmADSubnetRef')]"
               },
               "loadBalancerBackendAddressPools": [
                 {
@@ -410,28 +410,6 @@
                   "id": "[variables('lbADDC2PATRuleID')]"
                 }
               ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "[variables('zertoVMNicName')]",
-      "type": "Microsoft.Network/networkInterfaces",
-      "apiVersion": "2016-10-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]"
-      ],
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[variables('adSubnetRef')]"
-              }
             }
           }
         ]
@@ -631,7 +609,7 @@
                   "privateIPAllocationMethod": "Static",
                   "privateIPAddress": "[variables('vmDC2NicAddress')]",
                   "subnet": {
-                    "id": "[variables('adSubnetRef')]"
+                    "id": "[variables('vmADSubnetRef')]"
                   },
                   "loadBalancerBackendAddressPools": [
                     {
@@ -853,60 +831,44 @@
       } 
     },
     {
-      "name": "[variables('zertoVMName')]",
-      "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2016-04-30-preview",
-      "location": "[resourceGroup().location]",
-      "plan": {
-        "name": "zerto55u1zca",
-        "product": "zerto-cloud-appliance-50",
-        "publisher": "zerto"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNICName'))]"
-      ],
+      "name": "Zerto",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('zertoRG')]",
       "properties": {
-        "hardwareProfile": {
-          "vmSize": "Standard_D4s_v3"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetTemplateUri')]",
+          "contentVersion": "1.0.0.0"
         },
-        "osProfile": {
-          "computerName": "[parameters('vmDC1Name')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "zerto",
-            "offer": "zerto-cloud-appliance-50",
-            "sku": "zerto55u1zca",
-            "version": "latest"
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
           },
-          "osDisk": {
-            "osType": "Windows",
-            "createOption": "FromImage",
-            "vhd": {
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds/','test-zerto-vm-osdisk.vhd')]"
-            },
-            "name": "[variables('zertoVMName')]"
-          }
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNicName'))]"
-            }
-          ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "vmDC2NicName": {
+            "value": "[variables('vmDC2NicName')]"
+          },
+          "zertoVMName": {
+            "value": "[variables('zertoVMName')]"
+          },
+          "zertoVMNicName": {
+            "value": "[variables('zertoVMNicName')]"
+          },
+          "vmADSubnetRef": {
+            "value": "[variables('vmADSubnetRef')]"
+          },
+          "zertoVMName": {
+            "value": "[variables('vhdStorageAccountName')]"
+          },
+          "zertoVMNicName": {
+            "value": "[variables('diagStorageAccountName')]"
           }
         }
       }
-    }  
+    } 
   ],
   "outputs": {
   }
