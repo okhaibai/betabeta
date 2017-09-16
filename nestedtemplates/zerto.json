@@ -86,7 +86,7 @@
             "osType": "Windows",
             "createOption": "FromImage",
             "vhd": {
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds/','test-zerto-vm-osdisk.vhd')]"
+                "uri": "[concat(reference(resourceId('test-domaincontrollers-rg','Microsoft.Storage/storageAccounts/', parameters('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds/','test-zerto-vm-osdisk.vhd')]"
             },
             "name": "[parameters('zertoVMName')]"
             }
