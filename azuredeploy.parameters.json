@@ -22,3 +22,13 @@
     }
   }
 }
+
+
+zertoVMNicName
+vmDC2NicName
+adSubnetRef
+zertoVMName
+vhdStorageAccountName
+diagStorageAccountName
+adminUsername
+adminPassword
