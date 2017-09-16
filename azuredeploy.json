@@ -128,8 +128,8 @@
     "zertoVMNICName": "[concat(variables('zertoVMName'),'-vnic01')]",
 
     //Variables for Active Director VMs
-    "vhdStorageAccountName": "[concat('testzertovhdst01-',uniqueString(resourceGroup().id))]",
-    "diagStorageAccountName": "[concat('testzertodiagst01-',uniqueString(resourceGroup().id))]",
+    "vhdStorageAccountName": "testegzertodemovhdst01",
+    "diagStorageAccountName": "testegzertodemodiagst01",
     "storageAccountType": "Premium_LRS",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
