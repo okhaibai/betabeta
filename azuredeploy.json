@@ -159,7 +159,7 @@
     //ID Variables
     "vmADSubnetRef": "[resourceId(variables('networkRG'),'Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('beSubnetName'))]",
     "lbADid": "[resourceId('Microsoft.Network/loadBalancers',variables('lbADName'))]",
-    "lbADFrontEndNameConfigID": "[concat(variables('lbADid'),'/frontendIPConfigurations/',variables('lbADFrontEndName'))]",
+    "lbADFrontEndConfigID": "[concat(variables('lbADid'),'/frontendIPConfigurations/',variables('lbADFrontEndName'))]",
     "lbADDC1PATRuleID": "[concat(variables('lbADid'),'/inboundNatRules/',variables('lbADDC1PAT'))]",
     "lbADDC2PATRuleID": "[concat(variables('lbADid'),'/inboundNatRules/',variables('lbADDC2PAT'))]",
     "adBEAddressPoolID": "[concat(variables('lbADid'),'/backendAddressPools/',variables('lbADBackEndName'))]",
@@ -329,7 +329,7 @@
             "name": "[variables('lbADDC1PAT')]",
             "properties": {
               "frontendIPConfiguration": {
-                "id": "[variables('lbADFrontEndNameConfigID')]"
+                "id": "[variables('lbADFrontEndConfigID')]"
               },
               "protocol": "tcp",
               "frontendPort": "[parameters('vmDC1RDPport')]",
@@ -341,7 +341,7 @@
             "name": "[variables('lbADDC2PAT')]",
             "properties": {
               "frontendIPConfiguration": {
-                "id": "[variables('lbADFrontEndNameConfigID')]"
+                "id": "[variables('lbADFrontEndConfigID')]"
               },
               "protocol": "tcp",
               "frontendPort": "[parameters('vmDC2RDPport')]",
