@@ -373,7 +373,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "Microsoft.Resources/deployments/VNet",
-        "[variables('lbADName')]"
+        "[concat('Microsoft.Network/loadBalancers/',variables('lbADName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -440,6 +440,7 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC1NicName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]"
       ],
       "properties": {
