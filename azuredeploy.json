@@ -100,7 +100,7 @@
     "azgwPSK":{
       "type": "string",
       "metadata": {
-        "description": "Pre-Shared Key for VPN tunnel"
+        "description": "Pre-Shared Key for VPN tunnel/"
       },
       "defaultValue": "PSK123"
     },
@@ -116,6 +116,20 @@
       "metadata": {
         "description": "Local site subnet containing Domain Controllers"
       }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of resources such as templates and DSC modules that the script is dependent"
+      },
+      "defaultValue": "https://raw.githubusercontent.com/Azure/resiliency/master/AZ-201-active-directory-new-domain-ha-2-dc"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access _artifactsLocation"
+      },
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -165,19 +179,19 @@
     "adBEAddressPoolID": "[concat(variables('lbADid'),'/backendAddressPools/',variables('lbADBackEndName'))]",
     
     //Nested Template URIs
-    "vnetTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet.json')]",
-    "azgwTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/site-to-site-vpn.json')]",
-    "nicTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/nic.json')]",
-    "zertoTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/zerto.json')]",
-    "vnetwithDNSTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/vnet-with-dns-server.json')]",
-    "configureADBDCTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/configureADBDC.json')]",
+    "vnetTemplateUri": "[concat(parameters('_artifactsLocation'), '/nestedtemplates/vnet.json', parameters('_artifactsLocationSasToken'))]",
+    "azgwTemplateUri": "[concat(parameters('_artifactsLocation'), '/nestedtemplates/site-to-site-vpn.json', parameters('_artifactsLocationSasToken'))]",
+    "nicTemplateUri": "[concat(parameters('_artifactsLocation'), '/nestedtemplates/nic.json', parameters('_artifactsLocationSasToken'))]",
+    "zertoTemplateUri": "[concat(parameters('_artifactsLocation'),  '/nestedtemplates/zerto.json', parameters('_artifactsLocationSasToken'))]",
+    "vnetwithDNSTemplateUri": "[concat(parameters('_artifactsLocation'),  '/nestedtemplates/vnet-with-dns-server.json', parameters('_artifactsLocationSasToken'))]",
+    "configureADBDCTemplateUri": "[concat(parameters('_artifactsLocation'),  '/nestedtemplates/configureADBDC.json', parameters('_artifactsLocationSasToken'))]",
     
     //PS Modules URIs
-    "adPDCModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/CreateADPDC.zip')]",
+    "adPDCModulesURL": "[concat(parameters('_artifactsLocation'),  '/DSC/CreateADPDC.zip', parameters('_artifactsLocationSasToken'))]",
     "adPDCConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-    "adBDCPreparationModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/PrepareADBDC.zip')]",
+    "adBDCPreparationModulesURL": "[concat(parameters('_artifactsLocation'),  '/DSC/PrepareADBDC.zip', parameters('_artifactsLocationSasToken'))]",
     "adBDCPreparationFunction": "PrepareADBDC.ps1\\PrepareADBDC",
-    "adBDCConfigurationModulesURL": "[uri(deployment().properties.templateLink.uri, 'DSC/ConfigureADBDC.zip')]",
+    "adBDCConfigurationModulesURL": "[concat(parameters('_artifactsLocation'),  '/DSC/ConfigureADBDC.zip', parameters('_artifactsLocationSasToken'))]",
     "adBDCConfigurationFunction": "ConfigureADBDC.ps1\\ConfigureADBDC",
 
     //Diagnostics Storage Seettings
@@ -329,7 +343,7 @@
             "name": "[variables('lbADDC1PAT')]",
             "properties": {
               "frontendIPConfiguration": {
-                "id": "[variables('lbADFrontEndConfigID')]"
+                "id": "[variables('lbadfrontendconfigid')]"
               },
               "protocol": "tcp",
               "frontendPort": "[parameters('vmDC1RDPport')]",
@@ -341,7 +355,7 @@
             "name": "[variables('lbADDC2PAT')]",
             "properties": {
               "frontendIPConfiguration": {
-                "id": "[variables('lbADFrontEndConfigID')]"
+                "id": "[variables('lbadfrontendconfigid')]"
               },
               "protocol": "tcp",
               "frontendPort": "[parameters('vmDC2RDPport')]",
@@ -421,6 +435,28 @@
       }
     },
     {
+      "name": "[variables('zertoVMNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('vmADSubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "[parameters('vmDC1Name')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2016-03-30",
@@ -466,7 +502,7 @@
               },
               "name": "[concat(parameters('vmDC1Name'),'-data-disk1')]",
               "caching": "None",
-              "diskSizeGB": "[variables('vmDCDataDiskSize')]",
+              "diskSizeGB": "[variables('vmdcdatadisksize')]",
               "lun": 0,
               "createOption": "Empty"
             }
@@ -684,7 +720,7 @@
               },
               "name": "[concat(parameters('vmDC2Name'),'-data-disk1')]",
               "caching": "None",
-              "diskSizeGB": "[variables('vmDCDataDiskSize')]",
+              "diskSizeGB": "[variables('vmdcdatadisksize')]",
               "lun": 0,
               "createOption": "empty"
             }
@@ -836,46 +872,60 @@
       } 
     },
     {
-      "name": "Zerto",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2017-05-10",
-      "resourceGroup": "[variables('zertoRG')]",
+      "name": "[variables('zertoVMName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "plan": {
+        "name": "zerto55u1zca",
+        "product": "zerto-cloud-appliance-50",
+        "publisher": "zerto"
+      },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDC2NicName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('vhdStorageAccountName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('diagStorageAccountName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNICName'))]"
       ],
       "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-        "uri": "[variables('zertoTemplateUri')]",
-        "contentVersion": "1.0.0.0"
+        "hardwareProfile": {
+          "vmSize": "Standard_D4s_v3"
         },
-        "parameters": {
-          "adminUsername": {
-            "value": "[parameters('adminUsername')]"
+        "osProfile": {
+          "computerName": "[parameters('vmDC1Name')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "zerto",
+            "offer": "zerto-cloud-appliance-50",
+            "sku": "zerto55u1zca",
+            "version": "latest"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
-          },
-          "zertoVMName": {
-            "value": "[variables('zertoVMName')]"
-          },
-          "zertoVMNicName": {
-            "value": "[variables('zertoVMNicName')]"
-          },
-          "vmADSubnetRef": {
-            "value": "[variables('vmADSubnetRef')]"
-          },
-          "vhdStorageAccountName": {
-            "value": "[variables('vhdStorageAccountName')]"
-          },
-          "diagStorageAccountName": {
-            "value": "[variables('diagStorageAccountName')]"
+          "osDisk": {
+            "osType": "Windows",
+            "createOption": "FromImage",
+            "vhd": {
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vhdStorageAccountName'))).primaryEndpoints.blob,'vhds/','test-zerto-vm-osdisk.vhd')]"
+            },
+            "name": "[variables('zertoVMName')]"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('zertoVMNicName'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://', variables('diagStorageAccountName'), '.blob.core.windows.net')]"
           }
         }
       }
-    } 
+    }  
   ],
   "outputs": {
   }
